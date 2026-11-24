@@ -1,0 +1,20 @@
+services:
+  film-catalog:
+    build: .
+    image: film-catalog:1.0.0
+    container_name: film-catalog
+    ports:
+      - "8000:8000"
+    volumes:
+      - film-data:/data
+    environment:
+      FILM_DB_PATH: /data/film_catalog.db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health').status==200 else 1)"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  film-data:
